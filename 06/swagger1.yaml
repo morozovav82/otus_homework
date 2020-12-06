@@ -1,0 +1,150 @@
+swagger: '2.0'
+info:
+  title: Morozovav Homework 06 API-1
+  version: 1.0.0
+  description: 'Order Service, Billing Service, Notification Service'
+tags:
+- name: order
+  description: Order Service
+- name: bill
+  description: Billing Service
+- name: notify
+  description: Notification Service
+paths:
+  /account/{accountId}/payment:
+    post:
+      tags:
+      - bill
+      summary: Снять деньги со счета
+      consumes:
+      - application/x-www-form-urlencoded
+      parameters:
+      - name: accountId
+        in: path
+        description: ID аккаунта
+        required: true
+        type: integer
+        format: int64      
+      - name: money
+        in: formData
+        description: Сумма
+        type: number
+        format: float
+        required: true
+      responses:
+        200:
+          description: Операция выполнена
+          schema:
+            $ref: '#/definitions/AccountResult'
+        409:
+          description: Невозможно выполнить операцию
+
+  /order:
+    post:
+      tags:
+      - order
+      summary: Создать заказ
+      parameters:
+      - in: body
+        name: body
+        description: Тело заказа
+        required: true
+        schema:
+          $ref: '#/definitions/Order'
+      responses:
+        201:
+          description: Заказ создан
+        409:
+          description: Невозможно создать заказ
+
+  /send_mail:
+    post:
+      tags:
+      - notify
+      summary: Отправить письмо
+      parameters:
+      - in: body
+        name: body
+        description: Тело заказа
+        required: true
+        schema:
+          $ref: '#/definitions/Mail'
+      responses:
+        202:
+          description: Письмо поставлено в очередь отправки
+
+definitions:
+  Product:
+    description: Описание товара
+    type: object
+    required:
+      - productId
+      - qnt
+      - cost
+    properties:
+      productId:
+        type: integer
+        format: int64
+        description: ID товара
+      qnt:
+        type: integer
+        format: int32
+        description: Кол-во товара
+      cost:
+        type: number
+        format: float
+        description: Цена товара
+  Order:
+    description: Заказ
+    type: object
+    required:
+      - userId
+    properties:
+      userId:
+        type: integer
+        format: int64
+        description: ID пользователя    
+      products:
+        type: array
+        description: Продукты
+        items:
+          $ref: '#/definitions/Product'
+  AccountResult:
+    description: Аккаунт
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+        description: ID аккаунта
+      userId:
+        type: integer
+        format: int64
+        description: ID пользователя
+      balance:
+        type: number
+        format: float 
+        description: Баланс счета
+  Mail:
+    description: Данные для отправки письма
+    type: object
+    required:
+      - title
+      - to
+      - body
+    properties:
+      title:
+        type: string
+        description: Заголовок письма
+      to:
+        type: string
+        description: Кому
+      body:
+        type: string
+        description: Тело письма
+        
+# Added by API Auto Mocking Plugin
+host: virtserver.swaggerhub.com
+basePath: /otus3/Homework06-2/1.0.0
+schemes:
+ - https

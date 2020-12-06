@@ -1,0 +1,69 @@
+swagger: '2.0'
+info:
+  title: Morozovav Homework 06 API-3
+  version: 1.0.0
+  description: 'Gateway, Order Service'
+tags:
+- name: gateway
+  description: Gateway
+- name: order
+  description: Order Service
+paths:
+  /order:
+    post:
+      tags:
+      - gateway
+      summary: Создать заказ
+      parameters:
+      - in: body
+        name: body
+        description: Тело заказа
+        required: true
+        schema:
+          $ref: '#/definitions/Order'
+      responses:
+        201:
+          description: Заказ создан
+definitions:
+  Product:
+    description: Описание товара
+    type: object
+    required:
+      - productId
+      - qnt
+      - cost
+    properties:
+      productId:
+        type: integer
+        format: int64
+        description: ID товара
+      qnt:
+        type: integer
+        format: int32
+        description: Кол-во товара
+      cost:
+        type: number
+        format: float
+        description: Цена товара
+  Order:
+    description: Заказ
+    type: object
+    required:
+      - userId
+    properties:
+      userId:
+        type: integer
+        format: int64
+        description: ID пользователя    
+      products:
+        type: array
+        items:
+          $ref: '#/definitions/Product'
+        
+# Added by API Auto Mocking Plugin
+host: virtserver.swaggerhub.com
+# basePath: /otus3/Homework06-2/1.0.0
+schemes:
+ - https
+# Added by API Auto Mocking Plugin
+basePath: /otus3/MorozovavHomework06-2/1.0.0

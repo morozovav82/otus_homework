@@ -1,0 +1,304 @@
+swagger: '2.0'
+info:
+  title: Morozovav Homework 06 API-4
+  version: 1.0.0
+  description: 'User Service, Order Service, Billing Service, Mail Service'
+tags:
+- name: user
+  description: User Service
+- name: order
+  description: Order Service
+- name: bill
+  description: Billing Service
+- name: mail
+  description: Mail Service
+paths:
+  /user:
+    post:
+      tags:
+      - user
+      summary: Создание пользователя
+      parameters:
+      - in: body
+        name: body
+        description: Данные для регистрации пользователя
+        required: true
+        schema:
+          $ref: '#/definitions/UserRegistration'
+      responses:
+        '201':
+          description: Регистрация прошла успешно
+          schema:
+            $ref: '#/definitions/UserResult'
+  /user/{userId}:
+    get:
+      tags:
+      - user
+      summary: Получить информацию по пользователю
+      parameters:
+      - in: path
+        name: userId
+        description: ID пользователя
+        required: true
+      responses:
+        '200':
+          description: Информацию по пользователю
+          schema:
+            $ref: '#/definitions/UserResult'
+
+  /account:
+    post:
+      tags:
+      - bill
+      summary: Создать аккаунт
+      consumes:
+      - application/x-www-form-urlencoded
+      parameters:
+      - in: body
+        name: body
+        description: Данные для создания аккаунта
+        required: true
+        schema:
+          $ref: '#/definitions/NewAccount'
+      responses:
+        201:
+          description: Аккаунт создан
+          schema:
+            $ref: '#/definitions/AccountResult'
+  /account/{userId}:
+    get:
+      tags:
+      - bill
+      summary: Состояние счета
+      parameters:
+      - name: userId
+        in: path
+        description: ID пользователя
+        required: true
+        type: integer
+        format: int64      
+      responses:
+        200:
+          description: Операция обработана
+          schema:
+            $ref: '#/definitions/AccountResult'
+  /account/{userId}/put:
+    put:
+      tags:
+      - bill
+      summary: Положить деньги на счет
+      consumes:
+      - application/x-www-form-urlencoded
+      parameters:
+      - name: userId
+        in: path
+        description: ID пользователя
+        required: true
+        type: integer
+        format: int64      
+      - name: money
+        in: formData
+        description: Сумма
+        type: number
+        format: float
+        required: true
+      responses:
+        200:
+          description: Операция выполнена
+          schema:
+            $ref: '#/definitions/AccountResult'
+        409:
+          description: Невозможно выполнить операцию
+          
+  /order:
+    post:
+      tags:
+      - order
+      summary: Создать заказ
+      parameters:
+      - in: body
+        name: body
+        description: Тело заказа
+        required: true
+        schema:
+          $ref: '#/definitions/Order'
+      responses:
+        201:
+          description: Заказ создан
+          schema:
+            $ref: '#/definitions/OrderResult'
+        409:
+          description: Невозможно создать заказ
+  /order/{orderId}:
+    get:
+      tags:
+      - order
+      summary: Получить данные по заказу
+      parameters:
+      - name: orderId
+        in: path
+        description: ID заказа
+        required: true
+        type: integer
+        format: int64    
+      responses:
+        200:
+          description: Операция обработана
+          schema:
+            $ref: '#/definitions/OrderResult'
+
+  /list:
+    post:
+      tags:
+      - mail
+      summary: Получить все отправленные письма
+      responses:
+        200:
+          description: Письмо поставлено в очередь отправки
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Mail'
+
+definitions:
+  Order:
+    description: Новый заказ
+    type: object
+    required:
+      - userId
+    properties:
+      userId:
+        type: integer
+        format: int64
+        description: ID пользователя    
+      productId:
+        type: integer
+        format: int64
+        description: ID товара
+      qnt:
+        type: integer
+        format: int32
+        description: Кол-во товара
+      cost:
+        type: number
+        format: float
+        description: Цена товара
+  OrderResult:
+    description: Заказ
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+        description: ID заказа
+      userId:
+        type: integer
+        format: int64
+        description: ID пользователя    
+      productId:
+        type: integer
+        format: int64
+        description: ID товара
+      qnt:
+        type: integer
+        format: int32
+        description: Кол-во товара
+      cost:
+        type: number
+        format: float
+        description: Цена товара
+  UserRegistration:
+    description: Данные для регистрации пользователя
+    type: object
+    required:
+      - username
+      - email
+      - password
+    properties:
+      username:
+        type: string
+        description: Логин
+      firstName:
+        type: string
+        description: Имя
+      lastName:
+        type: string
+        description: Фамилия
+      email:
+        type: string
+        description: Email
+      phone:
+        type: string
+        description: Телефон
+  UserResult:
+    description: Пользователь
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64   
+        description: ID пользователя
+      username:
+        type: string
+        description: Логин
+      firstName:
+        type: string
+        description: Имя
+      lastName:
+        type: string
+        description: Фамилия
+      email:
+        type: string
+        description: Email
+      phone:
+        type: string
+        description: Телефон
+  NewAccount:
+    description: Новый аккаунт
+    type: object
+    required:
+      - userId
+    properties:
+      userId:
+        type: integer
+        format: int64
+        description: ID пользователя
+  AccountResult:
+    description: Аккаунт
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+        description: ID аккаунта
+      userId:
+        type: integer
+        format: int64
+        description: ID пользователя
+      balance:
+        type: number
+        format: float 
+        description: Баланс счета
+  Mail:
+    description: Данные для отправки письма
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+        description: ID письма
+      title:
+        type: string
+        description: Заголовок письма
+      to:
+        type: string
+        description: Кому
+      body:
+        type: string
+        description: Тело письма
+        
+# Added by API Auto Mocking Plugin
+host: virtserver.swaggerhub.com
+basePath: /otus3/Homework06-2/1.0.0
+schemes:
+ - https

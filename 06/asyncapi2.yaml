@@ -1,0 +1,97 @@
+asyncapi: 2.0.0
+info:
+  title: 'Morozovav Homework 06 AsyncAPI-2'
+  version: '1.0.0'
+  description: ''
+defaultContentType: application/json
+
+channels:
+  gateway/orderRequested:
+    publish:
+      message:
+        tags:
+          - name: gateway
+        name: OrderRequested
+        title: Заказ товара
+        contentType: application/json
+        payload:
+          $ref: '#/components/schemas/Order'
+          
+  order/orderCreated:
+    publish:
+      message:
+        tags:
+          - name: order    
+        name: OrderCreated
+        title: Заказ создан
+        contentType: application/json
+        payload:
+           type: object
+           properties:
+             orderId: 
+               type: integer
+           required: 
+             - orderId
+
+  bill/paymentSuccess:
+    publish:
+      message:
+        tags:
+          - name: order    
+        name: PaymentSuccess
+        title: Оплата принята
+        contentType: application/json
+        payload:
+           type: object
+           properties:
+             orderId: 
+               type: integer
+           required: 
+             - orderId
+             
+  bill/paymentReject:
+    publish:
+      message:
+        tags:
+          - name: order    
+        name: PaymentReject
+        title: Оплата отклонена
+        contentType: application/json
+        payload:
+           type: object
+           properties:
+             orderId: 
+               type: integer
+           required: 
+             - orderId
+              
+components: 
+  schemas: 
+    Product: 
+      description: Описание товара
+      type: object
+      properties: 
+        productId: 
+          type: integer
+          format: int64
+          description: ID товара
+        quantity: 
+          type: integer
+          format: int32
+          description: Кол-во товара
+        cost:
+          type: number
+          format: float
+          description: Цена товара
+    Order:
+      description: Заказ
+      type: object
+      properties:
+        userId:
+          type: integer
+          format: int64
+          description: ID пользователя    
+        products:
+          type: array
+          $ref: '#/components/schemas/Product'
+            
