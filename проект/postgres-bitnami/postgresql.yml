@@ -1,0 +1,10 @@
+postgresqlDatabase: users
+postgresqlUsername: users
+postgresqlPassword: qwerty123
+postgresqlMaxConnections: 500
+postgresqlDbUserConnectionLimit: 500
+
+#persistence.enabled: false
+
+service:
+  port: "5432"
